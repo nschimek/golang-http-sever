@@ -1,16 +1,20 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/nschimek/golang-http-server/internal/database"
 )
 
 func main() {
 	m := http.NewServeMux()
 
 	m.HandleFunc("/", testHandler)
+	m.HandleFunc("/err", testErrHandler)
 
 	const addr = "localhost:8080"
 	srv := http.Server{
@@ -26,7 +30,11 @@ func main() {
 }
 
 func testHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	w.Write([]byte("{}"))
+	respondWithJSON(w, 200, database.User{
+		Email: "test@example.com",
+	})
+}
+
+func testErrHandler(w http.ResponseWriter, r *http.Request) {
+	respondWithError(w, 500, errors.New("test error"))
 }
