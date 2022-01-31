@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,11 +9,20 @@ import (
 	"github.com/nschimek/golang-http-server/internal/database"
 )
 
+const dbPath = "db.json"
+
 func main() {
 	m := http.NewServeMux()
 
-	m.HandleFunc("/", testHandler)
-	m.HandleFunc("/err", testErrHandler)
+	db := database.NewClient(dbPath)
+	err := db.EnsureDB()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	api := apiConfig{dbClient: db}
+
+	m.HandleFunc("/users", api.endpointUsersHandler)
 
 	const addr = "localhost:8080"
 	srv := http.Server{
@@ -25,16 +33,6 @@ func main() {
 	}
 
 	fmt.Println("server started on:", addr)
-	err := srv.ListenAndServe()
+	err = srv.ListenAndServe()
 	log.Fatal(err)
-}
-
-func testHandler(w http.ResponseWriter, r *http.Request) {
-	respondWithJSON(w, 200, database.User{
-		Email: "test@example.com",
-	})
-}
-
-func testErrHandler(w http.ResponseWriter, r *http.Request) {
-	respondWithError(w, 500, errors.New("test error"))
 }

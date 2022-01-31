@@ -2,6 +2,7 @@ package database
 
 import (
 	"errors"
+	"log"
 	"time"
 )
 
@@ -38,6 +39,7 @@ func (c Client) CreateUser(email, password, name string, age int) (User, error) 
 		return User{}, err
 	}
 
+	log.Println("New user created successfully!")
 	return user, nil
 }
 

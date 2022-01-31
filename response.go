@@ -11,19 +11,23 @@ type errorBody struct {
 }
 
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
+	w.Header().Set("Content-Type", "application/json")
 	response, err := json.Marshal(payload)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println("error marshalling:", err)
+		w.WriteHeader(500)
+		response, _ := json.Marshal(errorBody{Error: "error marshalling"})
+		w.Write(response)
+		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	w.Write(response)
 }
 
 func respondWithError(w http.ResponseWriter, code int, err error) {
-	errorBody := errorBody{Error: err.Error()}
+	log.Println(err)
 
-	respondWithJSON(w, code, errorBody)
+	respondWithJSON(w, code, errorBody{Error: err.Error()})
 }
