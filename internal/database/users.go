@@ -39,7 +39,7 @@ func (c Client) CreateUser(email, password, name string, age int) (User, error) 
 		return User{}, err
 	}
 
-	log.Println("New user created successfully!")
+	log.Println("New user created successfully")
 	return user, nil
 }
 
@@ -84,6 +84,7 @@ func (c Client) UpdateUser(email, password, name string, age int) (User, error) 
 		return User{}, err
 	}
 
+	log.Println("User deleted successfully")
 	return user, nil
 }
 
@@ -102,5 +103,6 @@ func (c Client) DeleteUser(email string) error {
 		return err
 	}
 
+	log.Println("User deleted successfully")
 	return nil
 }

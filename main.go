@@ -9,6 +9,10 @@ import (
 	"github.com/nschimek/golang-http-server/internal/database"
 )
 
+type apiConfig struct {
+	dbClient database.Client
+}
+
 const dbPath = "db.json"
 
 func main() {
@@ -23,6 +27,7 @@ func main() {
 	api := apiConfig{dbClient: db}
 
 	m.HandleFunc("/users", api.endpointUsersHandler)
+	m.HandleFunc("/users/", api.endpointUsersHandler)
 
 	const addr = "localhost:8080"
 	srv := http.Server{

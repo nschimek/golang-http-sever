@@ -5,18 +5,15 @@ import (
 	"errors"
 	"log"
 	"net/http"
-
-	"github.com/nschimek/golang-http-server/internal/database"
+	"strings"
 )
-
-type apiConfig struct {
-	dbClient database.Client
-}
 
 func (api apiConfig) endpointUsersHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
 		api.handlerCreateUser(w, r)
+	case http.MethodDelete:
+		api.handlerDeleteUser(w, r)
 	default:
 		respondWithError(w, 404, errors.New("method not supported"))
 	}
@@ -47,4 +44,23 @@ func (api apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	respondWithJSON(w, 201, user)
+}
+
+func (api apiConfig) handlerDeleteUser(w http.ResponseWriter, r *http.Request) {
+	log.Println("Deleting user...")
+	userEmail := strings.TrimPrefix(r.URL.Path, "/users/")
+
+	if userEmail == "" {
+		respondWithError(w, http.StatusBadRequest, errors.New("no email address specified in path"))
+		return
+	}
+
+	err := api.dbClient.DeleteUser(userEmail)
+
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, struct{}{})
 }
