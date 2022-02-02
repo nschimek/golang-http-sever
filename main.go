@@ -1,9 +1,11 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/nschimek/golang-http-server/internal/database"
@@ -40,4 +42,17 @@ func main() {
 	fmt.Println("server started on:", addr)
 	err = srv.ListenAndServe()
 	log.Fatal(err)
+}
+
+func getParamFromPath(path, endpoint string) (string, error) {
+	if strings.HasPrefix(path, endpoint) {
+		param := strings.TrimPrefix(path, endpoint)
+		if param == "" {
+			return "", errors.New("param value not found")
+		} else {
+			return param, nil
+		}
+	} else {
+		return "", errors.New("expected URL prefix not found")
+	}
 }
