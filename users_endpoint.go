@@ -10,11 +10,11 @@ import (
 func (api apiConfig) endpointUsersHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		api.handleGetUser(w, r)
+		api.handlerGetUser(w, r)
 	case http.MethodPost:
 		api.handlerCreateUser(w, r)
 	case http.MethodPut:
-		api.handleUpdateUser(w, r)
+		api.handlerUpdateUser(w, r)
 	case http.MethodDelete:
 		api.handlerDeleteUser(w, r)
 	default:
@@ -23,7 +23,7 @@ func (api apiConfig) endpointUsersHandler(w http.ResponseWriter, r *http.Request
 }
 
 func (api apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request) {
-	log.Println("Creating new user...")
+	log.Println("creating new user...")
 	decoder := json.NewDecoder(r.Body)
 	params := struct {
 		Email    string `json:"email"`
@@ -50,7 +50,7 @@ func (api apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api apiConfig) handlerDeleteUser(w http.ResponseWriter, r *http.Request) {
-	log.Println("Deleting user...")
+	log.Println("deleting user...")
 	userEmail, err := getParamFromPath(r.URL.Path, "/users/")
 
 	if err != nil {
@@ -68,8 +68,8 @@ func (api apiConfig) handlerDeleteUser(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, struct{}{})
 }
 
-func (api apiConfig) handleGetUser(w http.ResponseWriter, r *http.Request) {
-	log.Println("Getting user...")
+func (api apiConfig) handlerGetUser(w http.ResponseWriter, r *http.Request) {
+	log.Println("getting user...")
 	userEmail, err := getParamFromPath(r.URL.Path, "/users/")
 
 	if err != nil {
@@ -87,8 +87,8 @@ func (api apiConfig) handleGetUser(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, user)
 }
 
-func (api apiConfig) handleUpdateUser(w http.ResponseWriter, r *http.Request) {
-	log.Println("Updating user...")
+func (api apiConfig) handlerUpdateUser(w http.ResponseWriter, r *http.Request) {
+	log.Println("updating user...")
 	userEmail, err := getParamFromPath(r.URL.Path, "/users/")
 
 	if err != nil {

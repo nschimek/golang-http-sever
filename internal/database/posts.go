@@ -1,6 +1,7 @@
 package database
 
 import (
+	"log"
 	"time"
 
 	"github.com/google/uuid"
@@ -38,6 +39,7 @@ func (c Client) CreatePost(userEmail, text string) (Post, error) {
 		return Post{}, err
 	}
 
+	log.Println("post created")
 	return post, nil
 }
 
@@ -72,5 +74,6 @@ func (c Client) DeletePost(id string) error {
 		return err
 	}
 
+	log.Println("post deleted")
 	return nil
 }
